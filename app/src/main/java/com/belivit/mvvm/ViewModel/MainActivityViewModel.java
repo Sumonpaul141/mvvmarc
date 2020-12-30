@@ -1,6 +1,7 @@
 package com.belivit.mvvm.ViewModel;
 
 import android.app.Application;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -20,7 +21,7 @@ public class MainActivityViewModel extends AndroidViewModel {
         mainActivityRepo = new MainActivityRepo(application);
     }
 
-    public LiveData<List<User>> getAllUsers(){
-        return mainActivityRepo.getAllUser();
+    public LiveData<List<User>> getAllUsers(ProgressBar progressBar){
+        return mainActivityRepo.getAllUser(progressBar);
     }
 }

@@ -2,6 +2,10 @@ package com.belivit.mvvm.Repo;
 
 import android.app.Application;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.Toast;
+
 import androidx.lifecycle.MutableLiveData;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -10,7 +14,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.belivit.mvvm.Globals.GlobalData;
+import com.belivit.mvvm.Globals.VolleySingleton;
 import com.belivit.mvvm.Model.User;
+import com.belivit.mvvm.View.MainActivity;
 import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,7 +32,7 @@ public class MainActivityRepo {
         this.application = application;
     }
 
-    public MutableLiveData<List<User>> getAllUser(){
+    public MutableLiveData<List<User>> getAllUser(final ProgressBar progressBar){
         if (userList == null){
             userList = new MutableLiveData<>();
         }
@@ -35,7 +41,6 @@ public class MainActivityRepo {
             public void onResponse(JSONArray response) {
 
                 try {
-                    Log.d("paul", "onResponse: " + response.get(0));
                     Gson gson = new Gson();
                     User user;
                     users = new ArrayList<>();
@@ -53,11 +58,13 @@ public class MainActivityRepo {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(application, "Please try again", Toast.LENGTH_SHORT).show();
 
             }
         });
 
-        RequestQueue requestQueue = Volley.newRequestQueue(application);
+        RequestQueue requestQueue = VolleySingleton.getInstance(application).getRequestQueue();
         requestQueue.add(request);
 
         return userList;
